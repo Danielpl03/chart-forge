@@ -11,13 +11,13 @@ Terminal de gráficos personal construido con React, TypeScript, Vite y TradingV
 npm install
 npm run dev
 ```
-Abre la URL local que muestra Vite (normalmente http://localhost:5173).
+Abre la URL local que muestra Vite (normalmente http://localhost:5173). En Android, abre `http://localhost:5173` en el navegador del mismo teléfono.
 
 ## Exchanges incluidos
 - Binance Spot: REST para velas históricas + WebSocket aggTrade público.
 - Bybit Spot: REST v5 para velas históricas + WebSocket publicTrade.\n- Bitunix Futures: REST público de klines + WebSocket público `trade`.
 
-No se solicitan claves API: solo se usan endpoints públicos de mercado. Si el navegador, la región o el exchange bloquean el acceso, la interfaz mostrará el error. No se envían órdenes.
+No se solicitan claves API: solo se usan endpoints públicos de mercado. Las peticiones REST pasan por el proxy de desarrollo de Vite (`/api/binance`, `/api/bybit`, `/api/bitunix`) para evitar que el navegador tenga que llamar directamente a dominios externos y reducir los errores CORS. El proxy funciona con `npm run dev`; no es un backend de producción. No se envían órdenes.
 
 ## CSV
 Cabeceras reconocidas (mayúsculas/minúsculas): `time`/`timestamp`/`date`/`datetime`, `open`, `high`, `low`, `close`, opcional `volume`. `time` numérico puede ser Unix en segundos o milisegundos; también admite fechas parseables por JavaScript. El CSV se dibuja en una instancia de gráfico separada, debajo del gráfico LIVE. No se mezcla con el array ni con el WebSocket en vivo.
@@ -57,12 +57,14 @@ Lightweight Charts se distribuye bajo Apache 2.0 y requiere atribución visible 
 - Los CSV se mantienen aislados en el gráfico donde se importaron y permanecen en memoria mientras la pestaña está abierta; no se incluyen en la configuración exportada.
 
 
-## Buscador, watchlists y alertas (v0.2)
+## Navegación por secciones, mercados, watchlists, indicadores y alertas (v0.4)
 
-- Buscador de mercados spot de Binance y Bybit, y contratos futures de Bitunix. Muestra símbolo, precio y variación/volumen de 24 h cuando el exchange los publica.
-- Watchlists locales: crea listas, añade activos desde el buscador, elimina elementos y abre un símbolo en un gráfico.
-- Alertas de precio por encima/debajo de un nivel. Se guardan en `localStorage`, se comprueban cada 15 segundos mientras la aplicación está abierta y también con los ticks de los gráficos abiertos.
+- Navegación separada por pestañas: Gráficos, Mercados, Watchlists, Indicadores y Alertas.
+- Explorador de mercados spot de Binance y Bybit, y contratos futures de Bitunix. Permite filtrar pares, consultar precio/variación de 24 h cuando el exchange los publica y abrir un gráfico directamente.
+- Watchlists locales: crea listas, añade activos desde Mercados, elimina elementos y abre un símbolo en un gráfico. No hay un campo para escribir un símbolo directamente dentro del gráfico ni para crear alertas con un símbolo arbitrario.
+- Gestor de indicadores separado por gráfico: añadir, configurar periodo, activar/desactivar y eliminar EMA, SMA, Bollinger, RSI, MACD y Volumen.
+- Alertas de precio por encima/debajo de un nivel. El activo se selecciona desde los mercados presentes en gráficos y watchlists. Se guardan en `localStorage`, se comprueban cada 15 segundos mientras la aplicación está abierta y también con los ticks de los gráficos abiertos.
 - Notificaciones del navegador opcionales mediante el permiso del usuario.
 - Exportar/importar incluye ahora gráficos, watchlists y alertas.
 
-**Limitación:** las alertas no se ejecutan con la aplicación cerrada ni funcionan como servicio push en segundo plano. Los datos dependen de las API públicas y de la disponibilidad/CORS de cada exchange.
+**Limitaciones:** las alertas no se ejecutan con la aplicación cerrada ni funcionan como servicio push en segundo plano. El proxy Vite requiere mantener `npm run dev` activo en Termux; si ves un error de conexión, reinicia Vite y revisa el mensaje detallado que aparece en la pestaña Mercados. Los WebSocket públicos siguen conectándose directamente a cada exchange y dependen de su disponibilidad de red.
