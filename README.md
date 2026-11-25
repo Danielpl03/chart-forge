@@ -55,3 +55,14 @@ Lightweight Charts se distribuye bajo Apache 2.0 y requiere atribución visible 
 - Cambia el nombre del espacio y exporta/importa la configuración como JSON.
 - Los datos de mercado se vuelven a solicitar al abrir la aplicación; no se persisten ticks ni velas en localStorage.
 - Los CSV se mantienen aislados en el gráfico donde se importaron y permanecen en memoria mientras la pestaña está abierta; no se incluyen en la configuración exportada.
+
+
+## Buscador, watchlists y alertas (v0.2)
+
+- Buscador de mercados spot de Binance y Bybit, y contratos futures de Bitunix. Muestra símbolo, precio y variación/volumen de 24 h cuando el exchange los publica.
+- Watchlists locales: crea listas, añade activos desde el buscador, elimina elementos y abre un símbolo en un gráfico.
+- Alertas de precio por encima/debajo de un nivel. Se guardan en `localStorage`, se comprueban cada 15 segundos mientras la aplicación está abierta y también con los ticks de los gráficos abiertos.
+- Notificaciones del navegador opcionales mediante el permiso del usuario.
+- Exportar/importar incluye ahora gráficos, watchlists y alertas.
+
+**Limitación:** las alertas no se ejecutan con la aplicación cerrada ni funcionan como servicio push en segundo plano. Los datos dependen de las API públicas y de la disponibilidad/CORS de cada exchange.
